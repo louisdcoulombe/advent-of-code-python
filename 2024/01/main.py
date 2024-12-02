@@ -19,19 +19,21 @@ def part1(txt: str) -> int:
 
     return sum([abs(x - y) for x, y in zip(a,b)])
 
+
 def part2(txt: str) -> int:
-    _ = parse_input(txt)
-    return 0 
+    a, b = parse_input(txt)
+    return sum([x * b.count(x) for x in a])
 
-function = [part1, part2]
-
-if __name__ == "__main__":
-    parser = ArgumentParser()
-    parser.add_argument("--p", type=int, default=0)
-    args = parser.parse_args()
-
+def main(args):
+    function = [part1, part2]
     current_dir = pathlib.Path(__file__).parent.resolve()
     with open(current_dir / "input.txt", "r", encoding="utf-8") as f:
         result = function[args.p](f.read())
         pyperclip.copy(result)
         print(result)
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument("--p", type=int, default=0)
+    main(parser.parse_args())
