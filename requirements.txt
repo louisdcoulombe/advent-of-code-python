@@ -1,0 +1,6 @@
+invoke
+advent-of-code-data
+python-dotenv
+pytest
+pyperclip
+
