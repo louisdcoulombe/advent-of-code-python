@@ -16,7 +16,7 @@ def skeleton(c, year=2024, day=None):
     if not day:
         day = datetime.datetime.today().day
 
-    day_folder = year_folder / str(day)
+    day_folder = year_folder / str(day).zfill(2)
     day_folder.mkdir(exist_ok=True)
 
     fn = day_folder / "input.txt"
