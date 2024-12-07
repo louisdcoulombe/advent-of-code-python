@@ -22,7 +22,7 @@ def check_around(m, r, c, ev, direction=None)  -> Optional[Tuple[int, int]]:
         if r + x >= len(m): continue
         if c + y < 0: continue
         if c + y >= len(m[0]): continue
-        if direction and d != direction:
+        if direction is not None and d != direction:
             continue
         
         rr = r + x
@@ -36,23 +36,30 @@ def part1(txt: str) -> int:
     for row in range(len(matrix)):
         for col in range(len(matrix[row])):
             # Must start with X
-            if matrix[row][col] != 'X':
+            v = matrix[row][col]
+            if v != 'X':
                 continue
 
             # Check around to see if we see other letters in the right order and direction
             direction = None
-            for letter in 'MASS':
-                d = check_around(matrix, row, col, letter, direction)
+            r, c = (row, col)
+            for letter in 'MAS':
+                d = check_around(matrix, r, c, letter, direction)
                 if d is None:
                     break
+
+                # Found a letter
                 direction = d
+                r += d[0]
+                c += d[1]
+                print(letter, end='')
+
             # Went through the loop, means we finished the word
             else:
                 total += 1
 
-            print(matrix[row][col], end='')
-        print('')
-    return 0
+            print('')
+    return total
 
 
 def part2(txt: str) -> int:
