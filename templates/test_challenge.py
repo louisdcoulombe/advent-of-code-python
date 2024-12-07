@@ -1,3 +1,4 @@
+import pytest
 from main import parse_input, part1, part2
 
 EXAMPLE = """
@@ -17,3 +18,6 @@ def test_part1():
 def test_part2():
     result = part2(EXAMPLE)
     assert result == 31
+
+if __name__ == '__main__':
+    pytest.main(['-vv'])
