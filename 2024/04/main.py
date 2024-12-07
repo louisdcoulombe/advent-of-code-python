@@ -10,25 +10,50 @@ def parse_input(txt: str) -> List[List[str]]:
         matrix.append(list(line))
     return matrix
 
-def check_around(m, r, c, ev, direction=None)  -> Optional[Tuple[int, int]]:
-    directions = [
+DIRECTIONS = [
             (-1, -1), (-1, 0), (-1, 1),
             (0, -1), (0, 1),
             (1, -1), (1, 0), (1, 1),
     ]
+
+def location_inbound(m, r, c, x, y):
+    if r + x < 0: return False
+    if r + x >= len(m): return False
+    if c + y < 0: return False
+    if c + y >= len(m[0]): return False
+    return True
+
+def check_around(m, r, c, ev, directions):
     for d in directions:
         x, y = d
-        if r + x < 0: continue
-        if r + x >= len(m): continue
-        if c + y < 0: continue
-        if c + y >= len(m[0]): continue
-        if direction is not None and d != direction:
+        if not location_inbound(m, r, c, x, y):
             continue
-        
+
         rr = r + x
         cc = c + y
         if m[rr][cc] == ev:
-            return d
+            return True
+    return False
+
+def drill_down(matrix, row, col, direction):
+    total = 0
+    r = row
+    c = col
+    for letter in 'MAS':
+        if not check_around(matrix, r, c, letter, [direction]):
+            break
+
+        # Found a letter
+        r = r + direction[0]
+        c = c + direction[1]
+        print(letter, end='')
+
+    # Went through the loop, means we finished the word
+    else:
+        total += 1
+
+    return total
+
 
 def part1(txt: str) -> int:
     matrix = parse_input(txt)
@@ -41,24 +66,9 @@ def part1(txt: str) -> int:
                 continue
 
             # Check around to see if we see other letters in the right order and direction
-            direction = None
-            r, c = (row, col)
-            for letter in 'MAS':
-                d = check_around(matrix, r, c, letter, direction)
-                if d is None:
-                    break
-
-                # Found a letter
-                direction = d
-                r += d[0]
-                c += d[1]
-                print(letter, end='')
-
-            # Went through the loop, means we finished the word
-            else:
-                total += 1
-
-            print('')
+            direction = DIRECTIONS
+            for d in direction:
+                total += drill_down(matrix, row, col, d)
     return total
 
 
