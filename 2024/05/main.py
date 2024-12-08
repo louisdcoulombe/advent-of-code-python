@@ -79,24 +79,19 @@ def part2(txt: str) -> int:
     def fix_invalid(ups):
         print('-'*20)
         print(ups)
-        for i in range(len(ups)):
+        for i in reversed(range(len(ups))):
             current = ups[i]
             if current not in rules:
                 continue
             print(f'{current}: {rules[current]}')
             for r in rules[current]:
                 if r in ups[:i]:
-                    # Put current after r
-                    swap(ups, lst.index(r), i)
-                    # ups.insert(ups.index(r)+1, current)
-                    # del ups[i]
+                    swap(ups, i, ups.index(r))
                     print(ups)
         return ups
 
     valids = list(map(fix_invalid, invalids))
-    print('='*20)
     print(valids)
-
     total = 0
     for v in valids:
         total += v[int(len(v)/2)]
