@@ -1,20 +1,43 @@
+from collections import defaultdict
 import pathlib
 from argparse import ArgumentParser
+from typing import DefaultDict
 import pyperclip
 
 
 def parse_input(txt: str):
-    left, right = [], []
+    rules = DefaultDict(list)
+    updates = []
     for line in txt.split("\n"):
-        a, b = line.split()
-        left.append(int(a))
-        right.append(int(b))
-    return left, right
+        if '|' in line:
+            a, b = line.split('|')
+            rules[int(a)].append(int(b))
+            continue
+        elif ',' in line:
+            updates.append(list(map(int, line.split(','))))
+
+    return rules, updates
 
 
 def part1(txt: str) -> int:
-    print(txt)
-    return 0
+    rules, updates = parse_input(txt)
+    middles = []
+    for update in updates:
+        # print('='*20)
+        for idx, v in enumerate(update, 1):
+            valid = True
+            # print(v)
+            for r in rules.get(v, []):
+                if r in update[:idx]:
+                    valid = False
+
+            if not valid:
+                break
+        else:
+            middles.append(update[int(len(update)/2)])
+
+    # print(middles)
+    return sum(middles)
 
 
 def part2(txt: str) -> int:
