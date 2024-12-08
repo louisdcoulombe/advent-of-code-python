@@ -73,8 +73,30 @@ def part1(txt: str) -> int:
 
 
 def part2(txt: str) -> int:
-    print(txt)
-    return 0 
+    matrix = parse_input(txt)
+    total = 0
+    for row in range(1, len(matrix)-1):
+        for col in range(1, len(matrix[row])-1):
+            # Find a A in the middle
+            if matrix[row][col] != 'A':
+                continue
+            # Found A
+            # check letters for (-1, -1) & (1, 1)
+            def chech_letters(r, c, directions):
+                letters = []
+                for x,y in directions:
+                    r = row + x
+                    c = col + y
+                    letters.append(matrix[r][c])
+                letters.sort()
+                print(letters)
+                return letters == ['M', 'S']
+
+            if chech_letters(row, col, [(-1, -1), (1, 1)]) and \
+                chech_letters(row, col, [(-1, 1), (1, -1)]):
+                total += 1
+
+    return total
 
 
 def main(args):
