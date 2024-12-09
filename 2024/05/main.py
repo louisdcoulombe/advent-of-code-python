@@ -1,12 +1,11 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 import pathlib
 from argparse import ArgumentParser
-from typing import DefaultDict
 import pyperclip
 
 
 def parse_input(txt: str):
-    rules = DefaultDict(list)
+    rules = defaultdict(list)
     updates = []
     for line in txt.split("\n"):
         if '|' in line:
@@ -19,17 +18,19 @@ def parse_input(txt: str):
     return rules, updates
 
 def parse_input2(txt: str):
-    rules = DefaultDict(list)
+    rules = defaultdict(list)
+    rrules = defaultdict(list)
     updates = []
     for line in txt.split("\n"):
         if '|' in line:
             a, b = line.split('|')
             rules[int(b)].append(int(a))
+            rrules[int(a)].append(int(b))
             continue
         elif ',' in line:
             updates.append(list(map(int, line.split(','))))
 
-    return rules, updates
+    return rules, updates, rrules
 
 def part1(txt: str) -> int:
     rules, updates = parse_input(txt)
@@ -56,12 +57,13 @@ def part1(txt: str) -> int:
 #     return lst[:from_idx] + lst[from_idx+
 
 def swap(lst, idx_a, idx_b):
+    print(f'swap {lst[idx_a]} -> {lst[idx_b]}')
+
     lst[idx_a], lst[idx_b] = lst[idx_b], lst[idx_a]
 
 def part2(txt: str) -> int:
-    rules, updates = parse_input(txt)
+    rules, updates, rrules = parse_input2(txt)
     print(rules)
-    middles = []
     invalids = []
     for update in updates:
         for idx, v in enumerate(update, 1):
@@ -84,10 +86,18 @@ def part2(txt: str) -> int:
             if current not in rules:
                 continue
             print(f'{current}: {rules[current]}')
-            for r in rules[current]:
-                if r in ups[:i]:
-                    swap(ups, i, ups.index(r))
-                    print(ups)
+
+            done = False
+            while not done:
+                print(rules[current])
+                for r in rules[current]:
+                    if r in ups[:i]:
+                        swap(ups, i, ups.index(r))
+                        print(ups)
+                        current = r
+
+                else:
+                    done = True
         return ups
 
     valids = list(map(fix_invalid, invalids))
@@ -106,8 +116,22 @@ def main(args):
         pyperclip.copy(result)
         print(result)
 
+    # Cheated :P
+    from functools import cmp_to_key
+
+    rules, pages = open(current_dir / 'input.txt').read().split('\n\n')
+    cmp = cmp_to_key(lambda x, y: -(x+'|'+y in rules))
+    a = [0, 0]
+    for p in pages.split():
+        p = p.split(',')
+        s = sorted(p, key=cmp)
+        a[p!=s] += int(s[len(s)//2])
+
+    print(*a)
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--p", type=int, default=0)
     main(parser.parse_args())
+    
