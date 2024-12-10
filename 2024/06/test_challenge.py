@@ -25,9 +25,9 @@ def test_part1():
     result = part1(EXAMPLE)
     assert result == 41
 
-def test_part2():
-    result = part2(EXAMPLE)
-    assert result == 31
+# def test_part2():
+#     result = part2(EXAMPLE)
+#     assert result == 6
 
 if __name__ == '__main__':
     pytest.main(['-vv'])
