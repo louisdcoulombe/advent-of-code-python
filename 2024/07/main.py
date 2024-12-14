@@ -4,12 +4,11 @@ import pyperclip
 
 
 def parse_input(txt: str):
-    left, right = [], []
+    res = {}
     for line in txt.split("\n"):
-        a, b = line.split()
-        left.append(int(a))
-        right.append(int(b))
-    return left, right
+        a, b = line.split(':')
+        res[int(a)] = [int(x) for x in b.split()]
+    return res
 
 
 def part1(txt: str) -> int:
