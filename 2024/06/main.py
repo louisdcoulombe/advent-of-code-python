@@ -26,20 +26,28 @@ def find_start(matrix):
                 return row, col
     assert False
 
-def part1(txt: str) -> int:
+def part1(txt: str, second='X') -> int:
     matrix = parse_input(txt)
     def is_outside(r, c):
         return r >= len(matrix) or c >= len(matrix[0]) or r < 0 or c < 0
     
     row, col = find_start(matrix)
     dir = 'N'
+    previous = []
     while True:
-        matrix[row][col] = 'X'
+
+        if matrix[row][col] == 'X':
+            matrix[row][col] = second
+            previous.append((row, col))
+        else:
+            matrix[row][col] = 'X'
+            previous = []
 
         trow, tcol = move[dir](row, col)
         if is_outside(trow, tcol):
             break
 
+        
         # Check if next move is a block, then turn
         if matrix[trow][tcol] == '#':
             print('turn', row, col)
@@ -59,12 +67,12 @@ def part2(txt: str) -> int:
     total = 0 
     for i in range(len(txt)):
         lst = list(txt)
-        if lst[i] == "\n" or lst[i] == '^':
+        if lst[i] == "\n" or lst[i] == '^' or lst[i] == '#':
             continue
 
         lst[i] = '#'
         try: 
-            part1(''.join(lst))
+            part1(''.join(lst), 'Z')
         except:
             total += 1
 
